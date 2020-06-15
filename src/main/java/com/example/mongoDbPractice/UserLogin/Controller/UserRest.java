@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/user")
 public class UserRest {
 
     @Autowired
@@ -30,6 +30,12 @@ public class UserRest {
 
 //
         return repository.save(user);
+    }
+
+    @GetMapping
+    public String printHello()
+    {
+        return "<h1>Hello</h1>";
     }
 
 }
