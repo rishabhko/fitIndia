@@ -8,6 +8,7 @@ public class User {
 
     @UserID
     private Long id;
+    private String password;
     @FirstName
     private String firstName;
     @LastName
@@ -22,8 +23,9 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String emailId, String gender, String phoneNumber) {
+    public User(Long id,String password, String firstName, String lastName, String emailId, String gender, String phoneNumber) {
         this.id = id;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
@@ -37,6 +39,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
