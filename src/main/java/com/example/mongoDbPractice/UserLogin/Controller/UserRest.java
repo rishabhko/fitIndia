@@ -5,6 +5,7 @@ import com.example.mongoDbPractice.UserLogin.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,7 @@ public class UserRest {
 
 
     @GetMapping("/get")
-    public List<User> getUser(@RequestBody User user)
+    public List<User> getUser( @RequestBody User user)
     {
 //        return repository.findByName(user.getName());
 
@@ -25,7 +26,7 @@ public class UserRest {
     }
 
     @PostMapping("/save")
-    public User saveUser(@RequestBody User user)
+    public User saveUser(@Valid @RequestBody User user)
     {
 
 //
