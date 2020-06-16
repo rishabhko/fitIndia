@@ -4,13 +4,13 @@ import com.example.mongoDbPractice.common.validation.annotation.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.Email;
 
+@Document(collection = "UserData")
 public class User {
 
-    @UserID
+//    @UserID
     @Id
-    private Long id;
+    private String id;
     private String password;
     @FirstName
     private String firstName;
@@ -26,7 +26,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id,String password, String firstName, String lastName, String emailId, String gender, String phoneNumber) {
+    public User(String id, String password, String firstName, String lastName, String emailId, String gender, String phoneNumber) {
         this.id = id;
         this.password = password;
         this.firstName = firstName;
@@ -36,11 +36,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

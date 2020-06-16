@@ -1,7 +1,9 @@
 package com.example.mongoDbPractice.UserLogin.Controller;
 
+import com.example.mongoDbPractice.UserLogin.Model.ReturnLoginUser;
 import com.example.mongoDbPractice.UserLogin.Repository.RepositoryUserMongoDb;
 import com.example.mongoDbPractice.UserLogin.Model.User;
+import com.example.mongoDbPractice.common.utils.IdGenerator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,7 @@ public class UserRest {
 
 
     @GetMapping("/getAllUsers")
-    public List<User> getUser(@RequestBody User user)
+    public List<User> getUser()
     {
 //        return repository.findByName(user.getName());
 
@@ -30,33 +32,35 @@ public class UserRest {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@Valid @RequestBody User user)
+    public ReturnLoginUser saveUser(@Valid @RequestBody User user)
     {
 
         List<User> userList=repository.findByEmailId(user.getEmailId());
         if (userList.size()>0)
         {
-            return "Account with email exists";
+            return new ReturnLoginUser(false,"email already exists",null);
         }
 
-        repository.save(user);
-        return "saved";
+        user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+
+       User savedUser= repository.save(user);
+        return new ReturnLoginUser(true,"user saved",savedUser);
     }
 
     @GetMapping("/loginUser")
-    public String loginUser(@Valid @RequestBody User user)
+    public ReturnLoginUser loginUser(@Valid @RequestBody User user)
     {
         List<User> userList=repository.findByEmailId(user.getEmailId());
         if (userList.size()!=1)
         {
-            return "No such email exist";
+            return new ReturnLoginUser(false,"no such email exits",null);
         }
         if (!userList.get(0).getPassword().equals(user.getPassword()))
         {
-            return "Password mismatch";
+            return new ReturnLoginUser(false,"password mismatch",null);
 
         }
-        return "Verified";
+        return new ReturnLoginUser(true,"users credentials matched",userList.get(0));
 
         }
 

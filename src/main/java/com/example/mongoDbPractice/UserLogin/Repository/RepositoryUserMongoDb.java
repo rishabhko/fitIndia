@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-public interface RepositoryUserMongoDb extends MongoRepository<User,Long> {
+public interface RepositoryUserMongoDb extends MongoRepository<User,String> {
     public List<User> findByEmailId(String emailId);
 }
