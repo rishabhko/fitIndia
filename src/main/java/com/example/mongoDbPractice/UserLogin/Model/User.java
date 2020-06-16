@@ -1,12 +1,15 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
 import com.example.mongoDbPractice.common.validation.annotation.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
 
 public class User {
 
     @UserID
+    @Id
     private Long id;
     private String password;
     @FirstName
