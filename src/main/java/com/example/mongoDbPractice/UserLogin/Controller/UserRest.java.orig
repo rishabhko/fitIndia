@@ -21,7 +21,7 @@ public class UserRest {
 
 
     @GetMapping("/getAllUsers")
-    public List<User> getUser(@RequestBody User user)
+    public List<User> getUser( @RequestBody User user)
     {
 //        return repository.findByName(user.getName());
 
@@ -43,6 +43,13 @@ public class UserRest {
         return "saved";
     }
 
+<<<<<<< HEAD
+    @GetMapping
+    public String printHello()
+    {
+        return "<h1>Hello</h1>";
+    }
+=======
     @GetMapping("/loginUser")
     public String loginUser(@Valid @RequestBody User user)
     {
@@ -60,6 +67,6 @@ public class UserRest {
 
         }
 
-
+>>>>>>> rishabh
 
 }
