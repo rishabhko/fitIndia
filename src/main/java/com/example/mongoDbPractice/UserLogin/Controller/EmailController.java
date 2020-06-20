@@ -91,10 +91,11 @@ public class EmailController {
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
-        MimeBodyPart attachPart = new MimeBodyPart();
+//        MimeBodyPart attachPart = new MimeBodyPart();
 
-        attachPart.attachFile("/home/rishabh.kohli/Desktop/resume.png");
-        multipart.addBodyPart(attachPart);
+//        attachPart.attachFile("/home/rishabh.kohli/Desktop/resume.png");
+//        attachPart.attachFile("");
+//        multipart.addBodyPart(attachPart);
         msg.setContent(multipart);
         Transport.send(msg);
         return id;
