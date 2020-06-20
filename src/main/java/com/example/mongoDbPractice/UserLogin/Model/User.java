@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "UserData")
 public class User {
 
-//    @UserID
+    //    @UserID
     @Id
     private String id;
     private String password;
@@ -22,11 +22,14 @@ public class User {
     @PhoneNumber
     private String phoneNumber;
 
+    private Boolean googleVerified;
+    private  Boolean fbVerified;
+
 
     public User() {
     }
 
-    public User(String id, String password, String firstName, String lastName, String emailId, String gender, String phoneNumber) {
+    public User(String id, String password, String firstName, String lastName, String emailId, String gender, String phoneNumber, Boolean googleVerified, Boolean fbVerified) {
         this.id = id;
         this.password = password;
         this.firstName = firstName;
@@ -34,6 +37,8 @@ public class User {
         this.emailId = emailId;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+        this.googleVerified = googleVerified;
+        this.fbVerified = fbVerified;
     }
 
     public String getId() {
@@ -90,5 +95,21 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Boolean getGoogleVerified() {
+        return googleVerified;
+    }
+
+    public void setGoogleVerified(Boolean googleVerified) {
+        this.googleVerified = googleVerified;
+    }
+
+    public Boolean getFbVerified() {
+        return fbVerified;
+    }
+
+    public void setFbVerified(Boolean fbVerified) {
+        this.fbVerified = fbVerified;
     }
 }
