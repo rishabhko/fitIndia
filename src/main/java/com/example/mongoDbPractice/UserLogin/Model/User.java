@@ -1,8 +1,11 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
+import com.example.mongoDbPractice.Trainer.Model.Course;
 import com.example.mongoDbPractice.common.validation.annotation.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 
 @Document(collection = "UserData")
@@ -16,8 +19,7 @@ public class User {
     private String firstName;
     @LastName
     private String lastName;
-    @Mail
-    private String emailId;
+
     private String gender;
     @PhoneNumber
     private String phoneNumber;
@@ -25,20 +27,31 @@ public class User {
     private Boolean googleVerified;
     private  Boolean fbVerified;
 
+    private List<String> coursesEnrolledIds;
+
 
     public User() {
     }
 
-    public User(String id, String password, String firstName, String lastName, String emailId, String gender, String phoneNumber, Boolean googleVerified, Boolean fbVerified) {
+    public User(String id, String password, String firstName, String lastName, String emailId, String gender, String phoneNumber, Boolean googleVerified, Boolean fbVerified, List<String> coursesEnrolledIds) {
         this.id = id;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.emailId = emailId;
+
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.googleVerified = googleVerified;
         this.fbVerified = fbVerified;
+        this.coursesEnrolledIds = coursesEnrolledIds;
+    }
+
+    public List<String> getCoursesEnrolledIds() {
+        return coursesEnrolledIds;
+    }
+
+    public void setCoursesEnrolledIds(List<String> coursesEnrolledIds) {
+        this.coursesEnrolledIds = coursesEnrolledIds;
     }
 
     public String getId() {
@@ -73,13 +86,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmailId() {
-        return emailId;
-    }
 
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
 
     public String getGender() {
         return gender;
