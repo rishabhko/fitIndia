@@ -13,6 +13,7 @@ public class TrainerModel {
     String name;
     @Id
     String id;
+    int uin;
     String password;
     String DOB;
     String gender;
@@ -93,13 +94,21 @@ public class TrainerModel {
         this.courses = courses;
     }
 
+    public int getUin() {
+        return uin;
+    }
+
+    public void setUin(int uin) {
+        this.uin = uin;
+    }
+
     public TrainerModel() {
     }
 
-
-    public TrainerModel(String name, String emailId, String password, String DOB, String gender, Boolean verified, String about, String[] certificatePaths, List<Course> courses) {
+    public TrainerModel(String name, String id, int UIN, String password, String DOB, String gender, Boolean verified, String about, String[] certificatePaths, List<Course> courses) {
         this.name = name;
-        this.id = emailId;
+        this.id = id;
+        this.uin = UIN;
         this.password = password;
         this.DOB = DOB;
         this.gender = gender;

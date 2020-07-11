@@ -14,6 +14,7 @@ import javax.jws.soap.SOAPBinding;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.logging.Logger;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -51,6 +52,12 @@ public class UserRest {
         }
         if (emailFormat.getOtp().equals(otp))
         {
+            int uniqueUin=generateUin();
+            while (repository.findByUin(uniqueUin)!=null)
+            {
+                uniqueUin=generateUin();
+            }
+            user.setUin(uniqueUin);
 //            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
             User savedUser= repository.save(user);
             repositoryOtp.delete(emailFormat);
@@ -69,14 +76,28 @@ public class UserRest {
         }
         if (user.getFbVerified()!=null && user.getFbVerified())
         {
-            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+//            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+
+            int uniqueUin=generateUin();
+            while (repository.findByUin(uniqueUin)!=null)
+            {
+                uniqueUin=generateUin();
+            }
+            user.setUin(uniqueUin);
 
             User savedUser= repository.save(user);
             return new ReturnLoginUser(true,"user saved",savedUser);
         }
         if (user.getGoogleVerified()!=null && user.getGoogleVerified())
         {
-            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+//            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+
+            int uniqueUin=generateUin();
+            while (repository.findByUin(uniqueUin)!=null)
+            {
+                uniqueUin=generateUin();
+            }
+            user.setUin(uniqueUin);
 
             User savedUser= repository.save(user);
             return new ReturnLoginUser(true,"user saved",savedUser);
@@ -121,6 +142,24 @@ public class UserRest {
         }
         return new ReturnLoginUser(true,"users credentials matched",userOptional.get());
      }
+
+    private int generateUin() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return number;
+
+    }
+
+    @GetMapping("/getByUin")
+    public Object getUserByUin(@RequestBody User user)
+    {
+        User userFound=repository.findByUin(user.getUin());
+        if (userFound==null)
+        {
+            return "No such User exists";
+        }
+        return userFound;
+    }
 
 
 

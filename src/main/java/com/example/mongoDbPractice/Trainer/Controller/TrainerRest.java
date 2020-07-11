@@ -3,11 +3,13 @@ package com.example.mongoDbPractice.Trainer.Controller;
 import com.example.mongoDbPractice.Trainer.Model.ReturnObject;
 import com.example.mongoDbPractice.Trainer.Model.TrainerModel;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
+import com.example.mongoDbPractice.UserLogin.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -38,10 +40,25 @@ public class TrainerRest {
        }
        else
        {
+
+           int uniqueUin= generateUin();
+           while (repositoryTrainer.findByUin(uniqueUin)!=null)
+           {
+               uniqueUin=generateUin();
+
+           }
+           trainer.setUin(uniqueUin);
            TrainerModel savedTrainer = repositoryTrainer.save(trainer);
            return new ReturnObject(true,"Trainer Saved",savedTrainer);
        }
 
+
+    }
+
+    private int generateUin() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return number;
 
     }
 
@@ -61,5 +78,16 @@ public class TrainerRest {
         }
         else
             return new ReturnObject(false,"multiple entries found!! Data error",null);
+    }
+
+    @GetMapping("/getByUin")
+    public Object getTrainerByUin(@RequestBody TrainerModel trainerModel)
+    {
+        TrainerModel trainerModel1=repositoryTrainer.findByUin(trainerModel.getUin());
+        if (trainerModel1==null)
+        {
+            return "No such Trainer exists";
+        }
+        return trainerModel1;
     }
 }

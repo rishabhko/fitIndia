@@ -11,4 +11,6 @@ public interface RepositoryTrainer extends MongoRepository<TrainerModel,String> 
 
 
 //    List<TrainerModel> findByEmailId(String emailId);
+
+    TrainerModel findByUin(int uin);
 }
