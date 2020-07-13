@@ -29,14 +29,14 @@ public class CourseRest {
     private RepositoryCourse repositoryCourse;
 
 
-    @GetMapping("getAll")
+    @PostMapping("getAll")
     public List<Course> getAllCourses()
     {
         return repositoryCourse.findAll();
     }
 
 
-    @GetMapping("/getCourse")
+    @PostMapping("/getCourse")
     public ReturnObject getCourseById(@RequestBody Course courseFromRequest)
     {
         Optional<Course> coursesOptional =repositoryCourse.findById(courseFromRequest.getId());

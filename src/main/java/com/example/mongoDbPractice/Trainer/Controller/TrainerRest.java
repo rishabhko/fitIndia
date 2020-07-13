@@ -22,7 +22,7 @@ public class TrainerRest {
 
 
 
-    @GetMapping("/getAll")
+    @PostMapping("/getAll")
     private List<TrainerModel> getALlTrainers()
     {
         return repositoryTrainer.findAll();
@@ -63,7 +63,7 @@ public class TrainerRest {
     }
 
 
-    @GetMapping("/getTrainer")
+    @PostMapping("/getTrainer")
     private ReturnObject getTrainerByemail(@RequestBody TrainerModel trainer)
     {
         Optional<TrainerModel> trainerModelOptional= repositoryTrainer.findById(trainer.getId());
@@ -80,7 +80,7 @@ public class TrainerRest {
             return new ReturnObject(false,"multiple entries found!! Data error",null);
     }
 
-    @GetMapping("/getByUin")
+    @PostMapping("/getByUin")
     public Object getTrainerByUin(@RequestBody TrainerModel trainerModel)
     {
         TrainerModel trainerModel1=repositoryTrainer.findByUin(trainerModel.getUin());

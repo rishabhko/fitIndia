@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-public class Rest {
+public class UploadVideoController {
 
 //    String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
 
@@ -43,7 +43,7 @@ public class Rest {
 //    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @PathVariable String courseId, @RequestBody Video video) throws IOException
 
     @RequestMapping(value = "/uploadFile/{courseId}", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @PathVariable String courseId, @RequestParam("video1") String video1) throws IOException
+    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @PathVariable String courseId, @RequestParam("video1") String video1,@RequestParam MultipartFile thumbnail) throws IOException
 
     {
 
@@ -55,12 +55,6 @@ public class Rest {
         {
             return new ResponseEntity<>("No such course exists",HttpStatus.BAD_REQUEST);
         }
-
-
-
-
-
-
         File makeDir = new File(path+ courseId+"/"+video.getDate()+"/");
 
         boolean dirCreated = makeDir.mkdir();
@@ -69,6 +63,16 @@ public class Rest {
         FileOutputStream fout = new FileOutputStream(convertFile);
         fout.write(file.getBytes());
         fout.close();
+
+
+        File convertFile2= new File(path+ courseId+"/"+video.getDate()+"/" +thumbnail.getOriginalFilename());
+        convertFile2.createNewFile();
+        FileOutputStream fout2 = new FileOutputStream(convertFile2);
+        fout2.write(thumbnail.getBytes());
+        fout2.close();
+
+
+        //setPath for thumbnail
 
         //"/stream/{fileType}/{fileName}/{trainerName}/{date}")
         video.setVideoPath("/stream/mp4/"+video.getName()+"/"+ courseId+"/"+video.getDate());
