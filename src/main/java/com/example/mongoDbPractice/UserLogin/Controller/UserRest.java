@@ -28,6 +28,9 @@ public class UserRest {
     @Autowired
     private RepositoryOtp repositoryOtp;
 
+    @Autowired
+    User user;
+
 
 
     @GetMapping("/getAllUsers")
@@ -70,6 +73,7 @@ public class UserRest {
         if (user.getFbVerified()!=null && user.getFbVerified())
         {
             user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
+
 
             User savedUser= repository.save(user);
             return new ReturnLoginUser(true,"user saved",savedUser);

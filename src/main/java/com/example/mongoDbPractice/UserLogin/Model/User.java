@@ -4,11 +4,12 @@ import com.example.mongoDbPractice.Trainer.Model.Course;
 import com.example.mongoDbPractice.common.validation.annotation.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
 @Document(collection = "UserData")
+@Component
 public class User {
 
     //    @UserID

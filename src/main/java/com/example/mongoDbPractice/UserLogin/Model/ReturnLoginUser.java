@@ -1,7 +1,5 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class ReturnLoginUser {
     public Boolean verified;
     public String reason;

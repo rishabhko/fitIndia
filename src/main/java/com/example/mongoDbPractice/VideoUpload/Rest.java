@@ -7,7 +7,6 @@ import com.example.mongoDbPractice.Trainer.Repository.RepositoryCourse;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryVideo;
 import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")

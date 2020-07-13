@@ -17,6 +17,7 @@ public class FirstNameValidator extends AbstractValidator implements ConstraintV
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if(!value.trim().matches(ValidationConstants.REGEX_ALPHABETIC))
         {
+            System.out.println("invalid");
             return addConstraintViolation(context, Constants.INCORRECT_FIRST_NAME_EXCEPTION);
         }
         return true;

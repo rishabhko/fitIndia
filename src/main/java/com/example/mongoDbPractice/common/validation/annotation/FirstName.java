@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.lang.annotation.*;
 
 @Documented
-@Target({ElementType.FIELD,ElementType.ANNOTATION_TYPE,ElementType.PARAMETER})
+@Target({ElementType.METHOD,ElementType.FIELD,ElementType.ANNOTATION_TYPE,ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FirstNameValidator.class)
 @NotBlank(message = "Name is required")
