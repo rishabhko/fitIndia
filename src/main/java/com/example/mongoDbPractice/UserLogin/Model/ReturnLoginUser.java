@@ -1,16 +1,14 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class ReturnLoginUser {
-    public Boolean verified;
+    public Boolean status;
     public String reason;
-    public Object user;
+    public Object uin;
 
-    public ReturnLoginUser(Boolean verified, String reason, Object user) {
-        this.verified = verified;
+    public ReturnLoginUser(Boolean verified, String reason, Object uin) {
+        this.status = verified;
         this.reason = reason;
-        this.user = user;
+        this.uin = uin;
     }
 
     public ReturnLoginUser() {

@@ -42,8 +42,8 @@ public class UploadVideoController {
 //    @RequestMapping(value = "/uploadFile/{courseId}", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @PathVariable String courseId, @RequestBody Video video) throws IOException
 
-    @RequestMapping(value = "/uploadFile/{courseId}", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @PathVariable String courseId, @RequestParam("video1") String video1,@RequestParam MultipartFile thumbnail) throws IOException
+    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> uploadFile (@RequestParam("file")MultipartFile file, @RequestParam("video1") String video1,@RequestParam MultipartFile thumbnail) throws IOException
 
     {
 
@@ -55,27 +55,28 @@ public class UploadVideoController {
         {
             return new ResponseEntity<>("No such course exists",HttpStatus.BAD_REQUEST);
         }
-        File makeDir = new File(path+ courseId+"/"+video.getDate()+"/");
+        File makeDir = new File(path+ video.getCourseId()+"/"+video.getDate()+"/");
 
         boolean dirCreated = makeDir.mkdir();
-        File convertFile= new File(path+ courseId+"/"+video.getDate()+"/" +file.getOriginalFilename());
+        File convertFile= new File(path+ video.getCourseId()+"/"+video.getDate()+"/" +file.getOriginalFilename());
         convertFile.createNewFile();
         FileOutputStream fout = new FileOutputStream(convertFile);
         fout.write(file.getBytes());
         fout.close();
 
 
-        File convertFile2= new File(path+ courseId+"/"+video.getDate()+"/" +thumbnail.getOriginalFilename());
+        File convertFile2= new File(path+ video.getCourseId()+"/"+video.getDate()+"/" +thumbnail.getOriginalFilename());
         convertFile2.createNewFile();
         FileOutputStream fout2 = new FileOutputStream(convertFile2);
         fout2.write(thumbnail.getBytes());
         fout2.close();
 
 
+        video.setThumbnailPath("http://localhost:8081/video/thumbnail/"+video.getCourseId()+"/"+video.getDate()+"/"+ thumbnail.getOriginalFilename());
         //setPath for thumbnail
 
         //"/stream/{fileType}/{fileName}/{trainerName}/{date}")
-        video.setVideoPath("/stream/mp4/"+video.getName()+"/"+ courseId+"/"+video.getDate());
+        video.setVideoPath("/stream/mp4/"+video.getName()+"/"+ video.getCourseId()+"/"+video.getDate());
 
 
 

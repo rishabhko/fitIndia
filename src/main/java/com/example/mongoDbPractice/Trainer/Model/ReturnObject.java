@@ -1,25 +1,25 @@
 package com.example.mongoDbPractice.Trainer.Model;
 
 public class ReturnObject {
-    Boolean statementExecuted;
+    Boolean status;
     String reason;
-    Object modelObject;
+    Object uin;
 
-    public ReturnObject(Boolean statementExecuted, String reason, Object modelObject) {
-        this.statementExecuted = statementExecuted;
+    public ReturnObject(Boolean status, String reason, Object uin) {
+        this.status = status;
         this.reason = reason;
-        this.modelObject = modelObject;
+        this.uin = uin;
     }
 
     public ReturnObject() {
     }
 
-    public Boolean getStatementExecuted() {
-        return statementExecuted;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setStatementExecuted(Boolean statementExecuted) {
-        this.statementExecuted = statementExecuted;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public String getReason() {
@@ -30,11 +30,11 @@ public class ReturnObject {
         this.reason = reason;
     }
 
-    public Object getModelObject() {
-        return modelObject;
+    public Object getUin() {
+        return uin;
     }
 
-    public void setModelObject(Object modelObject) {
-        this.modelObject = modelObject;
+    public void setUin(Object uin) {
+        this.uin = uin;
     }
 }

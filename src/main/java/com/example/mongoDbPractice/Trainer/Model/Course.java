@@ -20,16 +20,18 @@ public class Course {
     String name;
     String description;
     BigDecimal fees;
+    String thumbnailPath;
 
     List<Video> videos;
     List<User> usersEnrolled;
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, List<Video> videos, List<User> usersEnrolled) {
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, List<Video> videos, List<User> usersEnrolled) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
         this.description = description;
         this.fees = fees;
+        this.thumbnailPath = thumbnailPath;
         this.videos = videos;
         this.usersEnrolled = usersEnrolled;
     }
@@ -43,6 +45,14 @@ public class Course {
 
     public void setUsersEnrolled(List<User> usersEnrolled) {
         this.usersEnrolled = usersEnrolled;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
     public String getId() {
