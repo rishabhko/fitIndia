@@ -1,16 +1,16 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
-public class ReturnLoginUser {
-    public Boolean status;
+public class ReturnModelCheckFbGoogle {
+    public String status;
     public String reason;
     public Object uin;
 
-    public ReturnLoginUser(Boolean status, String reason, Object uin) {
+    public ReturnModelCheckFbGoogle(String status, String reason, Object uin) {
         this.status = status;
         this.reason = reason;
         this.uin = uin;
     }
 
-    public ReturnLoginUser() {
+    public ReturnModelCheckFbGoogle() {
     }
 }

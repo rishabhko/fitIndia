@@ -1,11 +1,8 @@
 package com.example.mongoDbPractice.UserLogin.Controller;
 
-import com.example.mongoDbPractice.UserLogin.Model.CheckIfFB_Google;
-import com.example.mongoDbPractice.UserLogin.Model.EmailFormat;
-import com.example.mongoDbPractice.UserLogin.Model.ReturnLoginUser;
+import com.example.mongoDbPractice.UserLogin.Model.*;
 import com.example.mongoDbPractice.UserLogin.Repository.RepositoryOtp;
 import com.example.mongoDbPractice.UserLogin.Repository.RepositoryUserMongoDb;
-import com.example.mongoDbPractice.UserLogin.Model.User;
 import com.example.mongoDbPractice.common.utils.IdGenerator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,43 +173,43 @@ public class UserRest {
     }
 
     @PostMapping("/checkIfFbOrGoogle")
-    public ResponseEntity<ReturnLoginUser> checkFb(@RequestBody CheckIfFB_Google checkIfFB_google)
+    public ResponseEntity<ReturnModelCheckFbGoogle> checkFb(@RequestBody CheckIfFB_Google checkIfFB_google)
     {
         Optional<User> userOptional=repository.findById(checkIfFB_google.getId());
 
         if (!userOptional.isPresent())
         {
-            return new ResponseEntity<>(new ReturnLoginUser(false,"No such email if registered",null),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ReturnModelCheckFbGoogle("3","No such email id registered",null),HttpStatus.OK);
         }
         User user=userOptional.get();
 
         if (checkIfFB_google.getOath().equals("f"))
         {
-            if (user.getFbVerified())
+            if (user.getFbVerified()!=null &&user.getFbVerified())
             {
-                return new ResponseEntity<>(new ReturnLoginUser(true,"User was registered by Fb" ,user.getUin()),HttpStatus.OK);
+                return new ResponseEntity<>(new ReturnModelCheckFbGoogle("1","User was registered by Fb" ,user.getUin()),HttpStatus.OK);
             }
             else
             {
-                return new ResponseEntity<>(new ReturnLoginUser(false,"User isn't registered through facebook",null),HttpStatus.OK);
+                return new ResponseEntity<>(new ReturnModelCheckFbGoogle("2","User isn't registered through facebook",null),HttpStatus.OK);
             }
 
         }
         if (checkIfFB_google.getOath().equals("g"))
         {
-            if (user.getGoogleVerified())
+            if (user.getGoogleVerified()!=null && user.getGoogleVerified())
             {
-                return new ResponseEntity<>(new ReturnLoginUser(true,"User was registered by Google" ,user.getUin()),HttpStatus.OK);
+                return new ResponseEntity<>(new ReturnModelCheckFbGoogle("1","User was registered by Google" ,user.getUin()),HttpStatus.OK);
             }
             else
             {
-                return new ResponseEntity<>(new ReturnLoginUser(false,"User isn't registered through Google",null),HttpStatus.OK);
+                return new ResponseEntity<>(new ReturnModelCheckFbGoogle("2","User isn't registered through Google",null),HttpStatus.OK);
             }
 
         }
 
 
-        return new ResponseEntity<>(new ReturnLoginUser(false,"Wrong auth token",null),HttpStatus.OK);
+        return new ResponseEntity<>(new ReturnModelCheckFbGoogle("2","Wrong auth token",null),HttpStatus.OK);
     }
 
 //    @PostMapping("/checkIfGoogle")
