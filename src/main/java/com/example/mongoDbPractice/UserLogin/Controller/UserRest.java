@@ -21,7 +21,7 @@ public class UserRest {
 //    private static final Logger logger = (Logger) LoggerFactory.getLogger(UserRest.class);
 
     @Autowired
-    private RepositoryUserMongoDb repository;
+    private RepositoryUserMongoDb repositoryUser;
 
     @Autowired
     private RepositoryOtp repositoryOtp;
@@ -35,13 +35,13 @@ public class UserRest {
         if(StringUtils.isEmpty(headerKey) || !headerKey.equals("98f88a00-152a-4627-8157-3814c754c035")) {
             throw new IllegalArgumentException("Header - secret key is empty or wrong");
         }
-        return new ResponseEntity<>(repository.findAll(),HttpStatus.OK);
+        return new ResponseEntity<>(repositoryUser.findAll(),HttpStatus.OK);
     }
 
     @PostMapping("/saveUser/{otp}")
     public ResponseEntity<ReturnLoginUser> saveUser(@Valid @RequestBody User user,@PathVariable String otp)
     {
-        Optional<User> userOptional=repository.findById(user.getId());
+        Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
         {
             return new ResponseEntity<>(new ReturnLoginUser(false,"email already exists",null),HttpStatus.BAD_REQUEST);
@@ -54,13 +54,13 @@ public class UserRest {
         if (emailFormat.getOtp().equals(otp))
         {
             int uniqueUin=generateUin();
-            while (repository.findByUin(uniqueUin)!=null)
+            while (repositoryUser.findByUin(uniqueUin)!=null)
             {
                 uniqueUin=generateUin();
             }
             user.setUin(uniqueUin);
 //            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
-            User savedUser= repository.save(user);
+            User savedUser= repositoryUser.save(user);
             repositoryOtp.delete(emailFormat);
             return new ResponseEntity<>(new ReturnLoginUser(true,"Successfully saved",savedUser.getUin()),HttpStatus.OK);
         }
@@ -70,7 +70,7 @@ public class UserRest {
     @PostMapping("/saveUser/googleFb")
     public ResponseEntity<ReturnLoginUser> saveUserGoogle(@Valid @RequestBody User user)
     {
-        Optional<User> userOptional=repository.findById(user.getId());
+        Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
         {
             return new ResponseEntity<>(new ReturnLoginUser(false,"email already exists! Please login",null),HttpStatus.BAD_REQUEST);
@@ -80,13 +80,13 @@ public class UserRest {
 //            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
 
             int uniqueUin=generateUin();
-            while (repository.findByUin(uniqueUin)!=null)
+            while (repositoryUser.findByUin(uniqueUin)!=null)
             {
                 uniqueUin=generateUin();
             }
             user.setUin(uniqueUin);
 
-            User savedUser= repository.save(user);
+            User savedUser= repositoryUser.save(user);
             return new ResponseEntity<>(new ReturnLoginUser(true,"Saved successful",savedUser.getUin()),HttpStatus.OK);
         }
         if (user.getGoogleVerified()!=null && user.getGoogleVerified())
@@ -94,13 +94,13 @@ public class UserRest {
 //            user.setId(IdGenerator.generateId(user.getFirstName(),user.getLastName()));
 
             int uniqueUin=generateUin();
-            while (repository.findByUin(uniqueUin)!=null)
+            while (repositoryUser.findByUin(uniqueUin)!=null)
             {
                 uniqueUin=generateUin();
             }
             user.setUin(uniqueUin);
 
-            User savedUser= repository.save(user);
+            User savedUser= repositoryUser.save(user);
             return new ResponseEntity<>(new ReturnLoginUser(true,"Saved successful",savedUser.getUin()),HttpStatus.OK);
         }
         return new ResponseEntity<>(new ReturnLoginUser(false,"fb and google is false",null),HttpStatus.BAD_REQUEST);
@@ -109,7 +109,7 @@ public class UserRest {
     @PostMapping("/loginUser/fbGoogle")
     public ResponseEntity<ReturnLoginUser> loginUserFbGoogle(@Valid @RequestBody User user)
     {
-        Optional<User> userOptional=repository.findById(user.getId());
+        Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (!userOptional.isPresent())
         {
             return new ResponseEntity<>(new ReturnLoginUser(false,"no such email exits",null),HttpStatus.BAD_REQUEST);
@@ -132,7 +132,7 @@ public class UserRest {
     @PostMapping("/loginUser")
     public ResponseEntity<ReturnLoginUser> loginUser(@Valid @RequestBody User user)
     {
-        Optional<User> userOptional=repository.findById(user.getId());
+        Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (!userOptional.isPresent())
         {
             return new ResponseEntity<>(new ReturnLoginUser(false,"no such email exits",null),HttpStatus.BAD_REQUEST);
@@ -159,7 +159,7 @@ public class UserRest {
             throw new IllegalArgumentException("Header - secret key is empty or wrong");
         }
 
-        User userFound=repository.findByUin(uin);
+        User userFound= repositoryUser.findByUin(uin);
         if (userFound==null)
         {
             return new ResponseEntity<>("No such User exists", HttpStatus.BAD_REQUEST);
@@ -170,7 +170,7 @@ public class UserRest {
     @PostMapping("/checkIfFbOrGoogle")
     public ResponseEntity<ReturnModelCheckFbGoogle> checkFb(@RequestBody CheckIfFB_Google checkIfFB_google)
     {
-        Optional<User> userOptional=repository.findById(checkIfFB_google.getId());
+        Optional<User> userOptional= repositoryUser.findById(checkIfFB_google.getId());
 
         if (!userOptional.isPresent())
         {
@@ -207,25 +207,49 @@ public class UserRest {
         return new ResponseEntity<>(new ReturnModelCheckFbGoogle("2","Wrong auth token",null),HttpStatus.OK);
     }
 
-//    @PostMapping("/checkIfGoogle")
-//    public ResponseEntity<ReturnLoginUser> checkGoogle(@RequestBody CheckIfFB_Google checkIfFB_google)
-//    {
-//        Optional<User> userOptional=repository.findById(checkIfFB_google.getId());
-//
-//        if (!userOptional.isPresent())
-//        {
-//            return new ResponseEntity<>(Boolean.FALSE,HttpStatus.BAD_REQUEST);
-//        }
-//        User user=userOptional.get();
-//        if (user.getGoogleVerified())
-//        {
-//            return new ResponseEntity<>(true,HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(false,HttpStatus.OK);
-//    }
+    @PostMapping("/updateUserByUin")
+    public ResponseEntity<ReturnLoginUser> updateUserByUin(@RequestBody User userNew)
+    {
+        if (userNew.getUin()==null)
+        {
+            return new ResponseEntity<>(new ReturnLoginUser(false,"uin can't be empty",null),HttpStatus.BAD_REQUEST);
+        }
+        User userSaved = repositoryUser.findByUin(userNew.getUin());
+        if (userSaved==null)
+        {
+            return new ResponseEntity<>(new ReturnLoginUser(false,"No such uin registered",null),HttpStatus.BAD_REQUEST);
+        }
+        if (userNew.getPassword()!=null)
+        {
+            userSaved.setPassword(userNew.getPassword());
+        }
+        if (userNew.getDOB()!=null)
+        {
+            userSaved.setDOB(userNew.getDOB());
+        }
+        if (userNew.getFirstName()!=null)
+        {
+            userSaved.setFirstName(userNew.getFirstName());
+        }
+        if (userNew.getLastName()!=null)
+        {
+            userSaved.setLastName(userNew.getLastName());
+        }
+        if (userNew.getGender()!=null)
+        {
+            userSaved.setGender(userNew.getGender());
+        }
+        if (userNew.getPhoneNumber()!=null)
+        {
+            userSaved.setPhoneNumber(userNew.getPhoneNumber());
+        }
+        repositoryUser.save(userSaved);
+        return new ResponseEntity<>(new ReturnLoginUser(true,"updated successfully",userSaved.getUin()),HttpStatus.OK);
 
-//    @PostMapping("/deleteById")
-//    public Boolean
+    }
+
+
+
 
 
 
