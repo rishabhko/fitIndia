@@ -13,7 +13,7 @@ public class TrainerModel {
     String name;
     @Id
     String id;
-    int uin;
+    Integer uin;
     String password;
     String DOB;
     String gender;
@@ -94,11 +94,11 @@ public class TrainerModel {
         this.courses = courses;
     }
 
-    public int getUin() {
+    public Integer getUin() {
         return uin;
     }
 
-    public void setUin(int uin) {
+    public void setUin(Integer uin) {
         this.uin = uin;
     }
 

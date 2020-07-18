@@ -4,8 +4,6 @@ import com.example.mongoDbPractice.UserLogin.Model.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.annotation.Generated;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,22 +19,33 @@ public class Course {
     String description;
     BigDecimal fees;
     String thumbnailPath;
+    Integer uin;
 
     List<Video> videos;
     List<User> usersEnrolled;
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, List<Video> videos, List<User> usersEnrolled) {
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, int uin, List<Video> videos, List<User> usersEnrolled) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
         this.description = description;
         this.fees = fees;
         this.thumbnailPath = thumbnailPath;
+        this.uin = uin;
         this.videos = videos;
         this.usersEnrolled = usersEnrolled;
     }
 
+
     public Course() {
+    }
+
+    public Integer getUin() {
+        return uin;
+    }
+
+    public void setUin(Integer uin) {
+        this.uin = uin;
     }
 
     public List<User> getUsersEnrolled() {

@@ -1,6 +1,5 @@
 package com.example.mongoDbPractice.UserLogin.Model;
 
-import com.example.mongoDbPractice.Trainer.Model.Course;
 import com.example.mongoDbPractice.common.validation.annotation.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,7 +14,7 @@ public class User {
     @Id
     private String id;
     private String password;
-    private int uin;
+    private Integer uin;
 
     private String DOB;
     @FirstName
@@ -51,11 +50,11 @@ public class User {
         this.coursesEnrolledIds = coursesEnrolledIds;
     }
 
-    public int getUin() {
+    public Integer getUin() {
         return uin;
     }
 
-    public void setUin(int uin) {
+    public void setUin(Integer uin) {
         this.uin = uin;
     }
 

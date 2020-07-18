@@ -3,7 +3,6 @@ package com.example.mongoDbPractice.Trainer.Controller;
 import com.example.mongoDbPractice.Trainer.Model.ReturnObject;
 import com.example.mongoDbPractice.Trainer.Model.TrainerModel;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
-import com.example.mongoDbPractice.UserLogin.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,8 +69,12 @@ public class TrainerRest {
 
 
     @PostMapping("/getTrainer")
-    private ResponseEntity<ReturnObject> getTrainerByemail(@RequestBody TrainerModel trainer)
+    private ResponseEntity<ReturnObject> getTrainerByemail(@RequestBody TrainerModel trainer,@RequestHeader("headerKey") String headerKey)
     {
+
+        if(StringUtils.isEmpty(headerKey) || !headerKey.equals("98f88a00-152a-4627-8157-3814c754c035")) {
+            throw new IllegalArgumentException("Header - secret key is empty or wrong");
+        }
         Optional<TrainerModel> trainerModelOptional= repositoryTrainer.findById(trainer.getId());
 
         if (!trainerModelOptional.isPresent())
@@ -119,6 +122,49 @@ public class TrainerRest {
             return new ResponseEntity<>(new ReturnObject(true,"Verified trainer",trainer.getUin()), HttpStatus.OK);
         }
         return new ResponseEntity<>(new ReturnObject(false,"Some error occured",null), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PostMapping("/updateTrainer")
+    public ResponseEntity<ReturnObject> updateTrainer(@RequestBody TrainerModel trainerNew)
+    {
+        if (trainerNew.getUin()==null)
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"uin can't be empty",null),HttpStatus.BAD_REQUEST);
+        }
+        TrainerModel trainerSaved = repositoryTrainer.findByUin(trainerNew.getUin());
+        if (trainerSaved==null)
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"No such trainer exists",null),HttpStatus.OK);
+        }
+        if (trainerNew.getName()!=null)
+        {
+            trainerSaved.setName(trainerNew.getName());
+        }
+        if (trainerNew.getPassword()!=null)
+        {
+            trainerSaved.setPassword(trainerNew.getPassword());
+        }
+        if (trainerNew.getDOB()!=null)
+        {
+            trainerSaved.setDOB(trainerNew.getDOB());
+        }
+        if (trainerNew.getGender()!=null)
+        {
+            trainerSaved.setGender(trainerNew.getGender());
+        }
+        if (trainerNew.getAbout()!=null)
+        {
+            trainerSaved.setAbout(trainerNew.getAbout());
+        }
+        if (trainerNew.getCertificatePaths()!=null)
+        {
+            trainerSaved.setCertificatePaths(trainerNew.getCertificatePaths());
+        }
+
+        repositoryTrainer.save(trainerSaved);
+
+        return new ResponseEntity<>(new ReturnObject(true,"updated successfully",trainerSaved.getUin()),HttpStatus.OK);
 
     }
 }

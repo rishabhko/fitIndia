@@ -15,9 +15,10 @@ public class Video {
     String description;
     String title;
     String videoPath;
+    Integer uin;
 
 
-    public Video(String id, String courseId, String name, String date, String thumbnailPath, String description, String title, String videoPath) {
+    public Video(String id, String courseId, String name, String date, String thumbnailPath, String description, String title, String videoPath, int uin) {
         this.id = id;
         this.courseId = courseId;
         this.name = name;
@@ -26,11 +27,19 @@ public class Video {
         this.description = description;
         this.title = title;
         this.videoPath = videoPath;
+        this.uin = uin;
     }
 
     public Video() {
     }
 
+    public Integer getUin() {
+        return uin;
+    }
+
+    public void setUin(Integer uin) {
+        this.uin = uin;
+    }
 
     public String getCourseId() {
         return courseId;

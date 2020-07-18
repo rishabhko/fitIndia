@@ -6,6 +6,9 @@ import com.example.mongoDbPractice.Trainer.Model.TrainerModel;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryCourse;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -57,9 +60,6 @@ public class CourseRest {
     public ReturnObject saveCourse(@RequestBody Course course)
     {
 
-
-
-
         Optional<TrainerModel> trainerOptional=repositoryTrainer.findById(course.getTrainerEmailId());
         if (!trainerOptional.isPresent())
         {
@@ -72,6 +72,15 @@ public class CourseRest {
             return new ReturnObject(false,"course with same name already exists", null);
 
         }
+
+
+        int uniqueUin=generateUin();
+        while (repositoryCourse.findByUin(uniqueUin)!=null)
+        {
+            uniqueUin=generateUin();
+        }
+        course.setUin(uniqueUin);
+
 
 
 
@@ -99,6 +108,39 @@ public class CourseRest {
         return new ReturnObject(true,"saved successfully",course);
     }
 
+    @GetMapping("/getCourseByUin/{uin}")
+    public ResponseEntity<Object> getVideoByUin(@PathVariable int uin)
+    {
+        if ( StringUtils.isEmpty(uin))
+        {
+            return new ResponseEntity<>("Course cant be fetched wrong id", HttpStatus.BAD_REQUEST);
+        }
+        Course course = repositoryCourse.findByUin(uin);
+        if (course==null)
+        {
+            return new ResponseEntity<>("No such id exists",HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(course,HttpStatus.OK);
+    }
+
+    @GetMapping("/getCourseById/{courseId}")
+    public ResponseEntity<Object> getVideoByUin(@PathVariable String courseId)
+    {
+        if ( StringUtils.isEmpty(courseId))
+        {
+            return new ResponseEntity<>("Video cant be fetched wrong id",HttpStatus.BAD_REQUEST);
+        }
+        Optional<Course> courseOptional = repositoryCourse.findById(courseId);
+        if (!courseOptional.isPresent())
+        {
+            return new ResponseEntity<>("No such id exists",HttpStatus.BAD_REQUEST);
+        }
+        Course course=courseOptional.get();
+        return new ResponseEntity<>(course,HttpStatus.OK);
+    }
+
+
+
 
     String generateRandomId(String name)
     {
@@ -106,6 +148,13 @@ public class CourseRest {
         String randomNumber = String.format("%04d", random.nextInt(10000));
         String setId=name.trim().trim()+randomNumber;
         return setId;
+
+    }
+
+    private int generateUin() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return number;
 
     }
 
