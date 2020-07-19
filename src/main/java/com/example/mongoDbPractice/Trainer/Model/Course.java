@@ -23,11 +23,12 @@ public class Course {
     String thumbnailPath;
     Integer uin;
     String category;
+    Boolean valid;
 
     List<Video> videos;
     List<User> usersEnrolled;
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, List<Video> videos, List<User> usersEnrolled) {
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, Boolean valid, List<Video> videos, List<User> usersEnrolled) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
@@ -36,11 +37,22 @@ public class Course {
         this.thumbnailPath = thumbnailPath;
         this.uin = uin;
         this.category = category;
+        this.valid = valid;
         this.videos = videos;
         this.usersEnrolled = usersEnrolled;
     }
 
+
+
     public Course() {
+    }
+
+    public Boolean getValid() {
+        return valid;
+    }
+
+    public void setValid(Boolean valid) {
+        this.valid = valid;
     }
 
     public String getCategory() {

@@ -8,6 +8,7 @@ import com.example.mongoDbPractice.Trainer.Repository.RepositoryCourse;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryVideo;
 import com.google.gson.Gson;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -182,6 +183,16 @@ public class UploadVideoController {
         {
             return new ResponseEntity<>("No such trainer",HttpStatus.BAD_REQUEST);
         }
+
+        try {
+            FileUtils.deleteDirectory(new File(path+video.getCourseId()+"/"+video.getDate()));
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         TrainerModel trainer=trainerModelOptional.get();
         repositoryVideo.delete(video);
         for (int i=0;i<course.getVideos().size();i++)
@@ -215,6 +226,7 @@ public class UploadVideoController {
         {
             return new ResponseEntity<>(new ReturnObject(false,"Invalid uin",null),HttpStatus.BAD_REQUEST);
         }
+
 
         Video videoSaved = repositoryVideo.findByUin(videoNew.getUin());
         if (videoSaved==null)

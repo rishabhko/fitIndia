@@ -22,7 +22,7 @@ import java.util.Random;
 @RequestMapping("/course")
 public class CourseRest {
 
-    //    String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
+//        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
     String path = "/home/arpit/fitback/";
 
     @Autowired
@@ -78,6 +78,7 @@ public class CourseRest {
         }
         course.setUin(uniqueUin);
         course.setCategory(course.getCategory().toUpperCase());
+        course.setValid(true);
 
 
         TrainerModel trainer = trainerOptional.get();
@@ -127,6 +128,7 @@ public class CourseRest {
         }
         course.setUin(uniqueUin);
         course.setCategory(course.getCategory().toUpperCase());
+        course.setValid(true);
 
 
         String idTOBeSet = generateRandomId(trainer.getName());
@@ -219,6 +221,36 @@ public class CourseRest {
 
     }
 
+
+    @PostMapping("/deleteCourseByUin/{uin}")
+    public ResponseEntity<ReturnObject> deleteCourseByUin(@PathVariable Integer uin) {
+        if (uin == null) {
+            return new ResponseEntity<>(new ReturnObject(false, "invalid uin", null), HttpStatus.BAD_REQUEST);
+        }
+        Course courseSaved = repositoryCourse.findByUin(uin);
+
+
+
+        Optional<TrainerModel> trainerModelOptional = repositoryTrainer.findById(courseSaved.getTrainerEmailId());
+        if (!trainerModelOptional.isPresent()) {
+            return new ResponseEntity<>(new ReturnObject(false, "Database error trainer not found", null), HttpStatus.BAD_REQUEST);
+        }
+        TrainerModel trainer = trainerModelOptional.get();
+        courseSaved.setValid(false);
+
+        for (int i = 0; i < trainer.getCourses().size(); i++) {
+            Course courseInTrainer = trainer.getCourses().get(i);
+            if (courseInTrainer.getId().equals(courseSaved.getId())) {
+                trainer.getCourses().set(i, courseSaved);
+                break;
+            }
+        }
+        repositoryTrainer.save(trainer);
+        repositoryCourse.save(courseSaved);
+        return new ResponseEntity<>(new ReturnObject(true, "Deleted successfully", courseSaved.getUin()), HttpStatus.OK);
+
+    }
+
     @GetMapping("/searchCourses/{searchString}")
     public ResponseEntity<List<Course>> searchCourseByString(@PathVariable String searchString)
     {
@@ -248,6 +280,7 @@ public class CourseRest {
 
             if (courseSaved.getCategory().toLowerCase().contains(category.toLowerCase()))
             {
+                if (courseSaved.getValid()==null || courseSaved.getValid())
                 returnCourseList.add(courseSaved);
             }
         }
