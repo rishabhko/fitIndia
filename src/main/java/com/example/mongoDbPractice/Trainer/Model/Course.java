@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.util.List;
 
+
+
 @Document(collection = "Course")
 public class Course {
 
@@ -20,11 +22,12 @@ public class Course {
     BigDecimal fees;
     String thumbnailPath;
     Integer uin;
+    String category;
 
     List<Video> videos;
     List<User> usersEnrolled;
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, int uin, List<Video> videos, List<User> usersEnrolled) {
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, List<Video> videos, List<User> usersEnrolled) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
@@ -32,12 +35,20 @@ public class Course {
         this.fees = fees;
         this.thumbnailPath = thumbnailPath;
         this.uin = uin;
+        this.category = category;
         this.videos = videos;
         this.usersEnrolled = usersEnrolled;
     }
 
-
     public Course() {
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Integer getUin() {

@@ -1,6 +1,7 @@
 package com.example.mongoDbPractice.VideoUpload;
 
 import com.example.mongoDbPractice.Trainer.Model.Course;
+import com.example.mongoDbPractice.Trainer.Model.ReturnObject;
 import com.example.mongoDbPractice.Trainer.Model.TrainerModel;
 import com.example.mongoDbPractice.Trainer.Model.Video;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryCourse;
@@ -205,11 +206,75 @@ public class UploadVideoController {
             }
         }
         return new ResponseEntity<>("Video deleted",HttpStatus.OK);
-
-
-
-
     }
+
+    @PostMapping("/updateVideoByUin")
+    public ResponseEntity<ReturnObject> deleteVideo(@RequestBody Video videoNew)
+    {
+        if (videoNew.getUin()==null)
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"Invalid uin",null),HttpStatus.BAD_REQUEST);
+        }
+
+        Video videoSaved = repositoryVideo.findByUin(videoNew.getUin());
+        if (videoSaved==null)
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"Wrong uin entered",null),HttpStatus.BAD_REQUEST);
+        }
+        Optional<Course> courseOptional = repositoryCourse.findById(videoSaved.getCourseId());
+        if (!courseOptional.isPresent())
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"No such course",null),HttpStatus.BAD_REQUEST);
+
+        }
+        Course course=courseOptional.get();
+        Optional<TrainerModel> trainerModelOptional=repositoryTrainer.findById(course.getTrainerEmailId());
+        if (!trainerModelOptional.isPresent())
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"No such trainer exists",null),HttpStatus.BAD_REQUEST);
+        }
+//        if (videoNew.getName()!=null)
+//        {
+//            videoSaved.setName(videoNew.getName());
+//        }
+        if (videoNew.getDescription()!=null)
+        {
+            videoSaved.setDescription(videoNew.getDescription());
+        }
+        if (videoNew.getTitle()!=null)
+        {
+            videoSaved.setTitle(videoNew.getTitle());
+        }
+
+
+
+        TrainerModel trainer=trainerModelOptional.get();
+        repositoryVideo.save(videoSaved);
+        for (int i=0;i<course.getVideos().size();i++)
+        {
+            Video videoFromCourse=course.getVideos().get(i);
+            if (videoFromCourse.getId().equals(videoSaved.getId()))
+            {
+                course.getVideos().set(i,videoSaved);
+                break;
+            }
+
+        }
+        repositoryCourse.save(course);
+        for (int i=0;i<trainer.getCourses().size();i++)
+        {
+            Course courseFromTrainer=trainer.getCourses().get(i);
+            if (courseFromTrainer.getId().equals(course.getId()))
+            {
+                trainer.getCourses().set(i,course);
+                repositoryTrainer.save(trainer);
+                break;
+            }
+        }
+        return new ResponseEntity<>(new ReturnObject(true,"Video updated successfully",videoSaved.getUin()),HttpStatus.OK);
+    }
+
+
 
 
 
