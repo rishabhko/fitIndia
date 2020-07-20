@@ -17,6 +17,7 @@ public class TrainerModel {
     String password;
     String DOB;
     String gender;
+    String profilePicPath;
     Boolean verified;
     String about;
     String[] certificatePaths;
@@ -102,16 +103,25 @@ public class TrainerModel {
         this.uin = uin;
     }
 
+    public String getProfilePicPath() {
+        return profilePicPath;
+    }
+
+    public void setProfilePicPath(String profilePicPath) {
+        this.profilePicPath = profilePicPath;
+    }
+
     public TrainerModel() {
     }
 
-    public TrainerModel(String name, String id, int UIN, String password, String DOB, String gender, Boolean verified, String about, String[] certificatePaths, List<Course> courses) {
+    public TrainerModel(String name, String id, Integer uin, String password, String DOB, String gender, String profilePicPath, Boolean verified, String about, String[] certificatePaths, List<Course> courses) {
         this.name = name;
         this.id = id;
-        this.uin = UIN;
+        this.uin = uin;
         this.password = password;
         this.DOB = DOB;
         this.gender = gender;
+        this.profilePicPath = profilePicPath;
         this.verified = verified;
         this.about = about;
         this.certificatePaths = certificatePaths;

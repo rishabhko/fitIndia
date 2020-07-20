@@ -12,18 +12,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/course")
 public class CourseRest {
 
-//        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
-    String path = "/home/arpit/fitback/";
+        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
+//    String path = "/home/arpit/fitback/";
 
     @Autowired
     private RepositoryTrainer repositoryTrainer;
@@ -33,8 +32,18 @@ public class CourseRest {
 
 
     @GetMapping("/getAll")
-    public List<Course> getAllCourses() {
-        return repositoryCourse.findAll();
+    public ResponseEntity<List<Course>> getAllCourses() {
+
+
+        List<Course> returnlIst=new ArrayList<>();
+         List<Course> allCourseSaved= repositoryCourse.findAll();
+        for (Course course:allCourseSaved) {
+            if (course.getValid()==null || course.getValid())
+            {
+                returnlIst.add(course);
+            }
+        }
+        return new ResponseEntity<>(returnlIst,HttpStatus.OK);
     }
 
 
@@ -46,8 +55,9 @@ public class CourseRest {
 
         if (present) {
             Course course = coursesOptional.get();
-            return new ReturnObject(true, "course found", course);
-
+            if (course.getValid()==null || course.getValid()){
+                return new ReturnObject(true, "course found", course);
+            }
         }
         return new ReturnObject(false, "No course by such Id", null);
 
@@ -79,6 +89,10 @@ public class CourseRest {
         course.setUin(uniqueUin);
         course.setCategory(course.getCategory().toUpperCase());
         course.setValid(true);
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//        Date date = new Date();
+        course.setCreationDate(LocalDate.now());
+        course.setUpdationData(LocalDate.now());
 
 
         TrainerModel trainer = trainerOptional.get();
@@ -129,6 +143,8 @@ public class CourseRest {
         course.setUin(uniqueUin);
         course.setCategory(course.getCategory().toUpperCase());
         course.setValid(true);
+        course.setCreationDate(LocalDate.now());
+        course.setUpdationData(LocalDate.now());
 
 
         String idTOBeSet = generateRandomId(trainer.getName());
@@ -156,13 +172,19 @@ public class CourseRest {
     @GetMapping("/getCourseByUin/{uin}")
     public ResponseEntity<Object> getVideoByUin(@PathVariable int uin) {
         if (StringUtils.isEmpty(uin)) {
-            return new ResponseEntity<>("Course cant be fetched wrong id", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Course cant be fetched wrong uin", HttpStatus.BAD_REQUEST);
         }
         Course course = repositoryCourse.findByUin(uin);
         if (course == null) {
-            return new ResponseEntity<>("No such id exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No such uin exists", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(course, HttpStatus.OK);
+        if (course.getValid()==null ||course.getValid())
+        {
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No such course exists", HttpStatus.BAD_REQUEST);
+
+
     }
 
     @GetMapping("/getCourseById/{courseId}")
@@ -175,8 +197,13 @@ public class CourseRest {
             return new ResponseEntity<>("No such id exists", HttpStatus.BAD_REQUEST);
         }
         Course course = courseOptional.get();
-        return new ResponseEntity<>(course, HttpStatus.OK);
-    }
+        if (course.getValid()==null ||course.getValid())
+        {
+            return new ResponseEntity<>(course, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No such id exists", HttpStatus.BAD_REQUEST);
+        }
+
 
 
     @PostMapping("/updateCourseByUin")
@@ -200,6 +227,8 @@ public class CourseRest {
         if (courseNew.getCategory() != null) {
             courseSaved.setCategory(courseNew.getCategory().toUpperCase());
         }
+//        course.setCreationDate(LocalDate.now());
+        courseSaved.setUpdationData(LocalDate.now());
 
 
         Optional<TrainerModel> trainerModelOptional = repositoryTrainer.findById(courseSaved.getTrainerEmailId());
@@ -255,16 +284,25 @@ public class CourseRest {
     public ResponseEntity<List<Course>> searchCourseByString(@PathVariable String searchString)
     {
         List<Course> courseList = repositoryCourse.findAll();
+        int i=0;
         List<Course> returnCourseList=new ArrayList<>();
         for (Course courseSaved:courseList) {
 //            if (org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString)>0)
 //           int x= org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString);
 
+            if (i>9)
+            {break;}
             if (courseSaved.getName().toLowerCase().contains(searchString.toLowerCase())||courseSaved.getDescription().toLowerCase().contains(searchString.toLowerCase()))
             {
-                returnCourseList.add(courseSaved);
+                if (courseSaved.getValid()==null || courseSaved.getValid())
+                {
+                    returnCourseList.add(courseSaved);
+
+                }
             }
+            i++;
         }
+        Collections.sort(returnCourseList);
         return new ResponseEntity<>(returnCourseList,HttpStatus.OK);
 
     }
@@ -274,16 +312,23 @@ public class CourseRest {
     {
         List<Course> courseList = repositoryCourse.findAll();
         List<Course> returnCourseList=new ArrayList<>();
+        int i=0;
         for (Course courseSaved:courseList) {
 //            if (org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString)>0)
-//           int x= org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString);
+//            int x= org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString);
 
+            if (i>9)
+            {
+                break;
+            }
             if (courseSaved.getCategory().toLowerCase().contains(category.toLowerCase()))
             {
                 if (courseSaved.getValid()==null || courseSaved.getValid())
                 returnCourseList.add(courseSaved);
             }
+            i++;
         }
+        Collections.sort(returnCourseList);
         return new ResponseEntity<>(returnCourseList,HttpStatus.OK);
 
     }

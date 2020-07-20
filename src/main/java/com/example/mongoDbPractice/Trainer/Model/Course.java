@@ -1,16 +1,19 @@
 package com.example.mongoDbPractice.Trainer.Model;
 
 import com.example.mongoDbPractice.UserLogin.Model.User;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
 
 @Document(collection = "Course")
-public class Course {
+public class Course implements Comparable<Course> {
 
     @Id
     String id;
@@ -24,11 +27,14 @@ public class Course {
     Integer uin;
     String category;
     Boolean valid;
+    LocalDate creationDate;
+    LocalDate updationData;
 
     List<Video> videos;
     List<User> usersEnrolled;
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, Boolean valid, List<Video> videos, List<User> usersEnrolled) {
+
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, Boolean valid, LocalDate creationDate, LocalDate updationData, List<Video> videos, List<User> usersEnrolled) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
@@ -38,13 +44,29 @@ public class Course {
         this.uin = uin;
         this.category = category;
         this.valid = valid;
+        this.creationDate = creationDate;
+        this.updationData = updationData;
         this.videos = videos;
         this.usersEnrolled = usersEnrolled;
     }
 
-
-
     public Course() {
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDate getUpdationData() {
+        return updationData;
+    }
+
+    public void setUpdationData(LocalDate updationData) {
+        this.updationData = updationData;
     }
 
     public Boolean getValid() {
@@ -133,5 +155,10 @@ public class Course {
 
     public void setVideos(List<Video> videos) {
         this.videos = videos;
+    }
+
+    @Override
+    public int compareTo(Course o) {
+        return getCreationDate().compareTo(o.getCreationDate());
     }
 }
