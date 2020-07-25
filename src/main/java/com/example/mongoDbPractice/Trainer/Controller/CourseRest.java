@@ -1,10 +1,10 @@
 package com.example.mongoDbPractice.Trainer.Controller;
 
-import com.example.mongoDbPractice.Trainer.Model.Course;
-import com.example.mongoDbPractice.Trainer.Model.ReturnObject;
-import com.example.mongoDbPractice.Trainer.Model.TrainerModel;
+import com.example.mongoDbPractice.Trainer.Model.*;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryCourse;
 import com.example.mongoDbPractice.Trainer.Repository.RepositoryTrainer;
+import com.example.mongoDbPractice.UserLogin.Model.User;
+import com.example.mongoDbPractice.UserLogin.Repository.RepositoryUserMongoDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import java.util.*;
 @RequestMapping("/course")
 public class CourseRest {
 
-        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
-//    String path = "/home/arpit/fitback/";
+//        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
+    String path = "/home/arpit/fitback/";
 
     @Autowired
     private RepositoryTrainer repositoryTrainer;
@@ -30,20 +30,31 @@ public class CourseRest {
     @Autowired
     private RepositoryCourse repositoryCourse;
 
+    @Autowired
+    private RepositoryUserMongoDb repositoryUserMongoDb;
+
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<ReturnTrainer_Course_Video>> getAllCourses() {
 
 
         List<Course> returnlIst=new ArrayList<>();
+        List<ReturnTrainer_Course_Video> returnTrainer_course_videosList= new ArrayList<>();
          List<Course> allCourseSaved= repositoryCourse.findAll();
         for (Course course:allCourseSaved) {
             if (course.getValid()==null || course.getValid())
             {
-                returnlIst.add(course);
+               Optional<TrainerModel> trainerModelOptional=  repositoryTrainer.findById(course.getTrainerEmailId());
+               TrainerModel trainer =trainerModelOptional.get();
+//               List<Integer> videoUinList = new ArrayList<>();
+//                for (Video video:course.getVideos()) {
+//                    videoUinList.add(video.getUin());
+//                }
+
+                returnTrainer_course_videosList.add(new ReturnTrainer_Course_Video(trainer.getName(),trainer.getCertificatePaths(),trainer.getUin(),trainer.getProfilePicPath(),course));
             }
         }
-        return new ResponseEntity<>(returnlIst,HttpStatus.OK);
+        return new ResponseEntity<>(returnTrainer_course_videosList,HttpStatus.OK);
     }
 
 
@@ -180,11 +191,14 @@ public class CourseRest {
         }
         if (course.getValid()==null ||course.getValid())
         {
-            return new ResponseEntity<>(course, HttpStatus.OK);
+            Optional<TrainerModel> trainerModelOptional=  repositoryTrainer.findById(course.getTrainerEmailId());
+            TrainerModel trainer =trainerModelOptional.get();
+
+
+            return new ResponseEntity<>(new ReturnTrainer_Course_Video(trainer.getName(),trainer.getCertificatePaths(),trainer.getUin(),trainer.getProfilePicPath(),course),HttpStatus.OK);
+//            return new ResponseEntity<>(course, HttpStatus.OK);
         }
         return new ResponseEntity<>("No such course exists", HttpStatus.BAD_REQUEST);
-
-
     }
 
     @GetMapping("/getCourseById/{courseId}")
@@ -270,7 +284,8 @@ public class CourseRest {
         for (int i = 0; i < trainer.getCourses().size(); i++) {
             Course courseInTrainer = trainer.getCourses().get(i);
             if (courseInTrainer.getId().equals(courseSaved.getId())) {
-                trainer.getCourses().set(i, courseSaved);
+                trainer.getCourses().remove(i);
+//                trainer.getCourses().set(i, courseSaved);
                 break;
             }
         }
@@ -280,8 +295,8 @@ public class CourseRest {
 
     }
 
-    @GetMapping("/searchCourses/{searchString}")
-    public ResponseEntity<List<Course>> searchCourseByString(@PathVariable String searchString)
+    @GetMapping("/searchCourses/{searchString}/{searchByN}")
+    public ResponseEntity<List<ReturnTrainer_Course_Video>> searchCourseByString(@PathVariable String searchString,@PathVariable Integer searchByN)
     {
         List<Course> courseList = repositoryCourse.findAll();
         int i=0;
@@ -290,8 +305,7 @@ public class CourseRest {
 //            if (org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString)>0)
 //           int x= org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString);
 
-            if (i>9)
-            {break;}
+
             if (courseSaved.getName().toLowerCase().contains(searchString.toLowerCase())||courseSaved.getDescription().toLowerCase().contains(searchString.toLowerCase()))
             {
                 if (courseSaved.getValid()==null || courseSaved.getValid())
@@ -300,15 +314,46 @@ public class CourseRest {
 
                 }
             }
-            i++;
+
         }
         Collections.sort(returnCourseList);
-        return new ResponseEntity<>(returnCourseList,HttpStatus.OK);
+        List<Course> returnCourseListFinal=new ArrayList<>();
+        for (Course course:returnCourseList) {
+            if (i<searchByN)
+            {
+                returnCourseListFinal.add(course);
+                i++;
+            }
+            else break;
+        }
+
+
+
+        List<ReturnTrainer_Course_Video> returnTrainer_course_videosList= new ArrayList<>();
+
+        for (Course course:returnCourseListFinal) {
+
+            Optional<TrainerModel> trainerModelOptional=  repositoryTrainer.findById(course.getTrainerEmailId());
+                TrainerModel trainer =trainerModelOptional.get();
+//                List<Integer> videoUinList = new ArrayList<>();
+//
+//                if (course.getVideos()!=null) {
+//                    for (Video video : course.getVideos()) {
+//                        videoUinList.add(video.getUin());
+//                    }
+//                }
+
+                returnTrainer_course_videosList.add(new ReturnTrainer_Course_Video(trainer.getName(),trainer.getCertificatePaths(),trainer.getUin(),trainer.getProfilePicPath(),course));
+
+        }
+        return new ResponseEntity<>(returnTrainer_course_videosList,HttpStatus.OK);
+
+//        return new ResponseEntity<>(returnCourseListFinal,HttpStatus.OK);
 
     }
 
-    @GetMapping("/searchCoursesByCategory/{category}")
-    public ResponseEntity<List<Course>> searchCourseByCategoty(@PathVariable String category)
+    @GetMapping("/searchCoursesByCategory/{category}/{searchByN}")
+    public ResponseEntity<List<ReturnTrainer_Course_Video>> searchCourseByCategoty(@PathVariable String category,@PathVariable Integer searchByN)
     {
         List<Course> courseList = repositoryCourse.findAll();
         List<Course> returnCourseList=new ArrayList<>();
@@ -317,20 +362,74 @@ public class CourseRest {
 //            if (org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString)>0)
 //            int x= org.apache.commons.lang3.StringUtils.compareIgnoreCase(courseSaved.getName(), searchString);
 
-            if (i>9)
-            {
-                break;
-            }
+
+
             if (courseSaved.getCategory().toLowerCase().contains(category.toLowerCase()))
             {
                 if (courseSaved.getValid()==null || courseSaved.getValid())
                 returnCourseList.add(courseSaved);
             }
-            i++;
         }
         Collections.sort(returnCourseList);
-        return new ResponseEntity<>(returnCourseList,HttpStatus.OK);
 
+
+        List<Course> returnCourseListFinal=new ArrayList<>();
+        for (Course course:returnCourseList) {
+            if (i<searchByN)
+            {
+                returnCourseListFinal.add(course);
+                i++;
+            }
+            else break;
+        }
+
+
+        List<ReturnTrainer_Course_Video> returnTrainer_course_videosList= new ArrayList<>();
+
+        for (Course course:returnCourseListFinal) {
+
+            Optional<TrainerModel> trainerModelOptional=  repositoryTrainer.findById(course.getTrainerEmailId());
+            TrainerModel trainer =trainerModelOptional.get();
+//            List<Integer> videoUinList = new ArrayList<>();
+//            for (Video video:course.getVideos()) {
+//                videoUinList.add(video.getUin());
+//            }
+
+            returnTrainer_course_videosList.add(new ReturnTrainer_Course_Video(trainer.getName(),trainer.getCertificatePaths(),trainer.getUin(),trainer.getProfilePicPath(),course));
+
+        }
+        return new ResponseEntity<>(returnTrainer_course_videosList,HttpStatus.OK);
+//        return new ResponseEntity<>(returnCourseList,HttpStatus.OK);
+
+    }
+
+
+    @GetMapping("/getCoursesByUserUin/{userUin}")
+    public ResponseEntity<Object> getenrolledCoursesList(@PathVariable Integer userUin)
+    {
+        User user=repositoryUserMongoDb.findByUin(userUin);
+        if (user==null)
+        {
+            return new ResponseEntity<>("No such user registered",HttpStatus.BAD_REQUEST);
+        }
+
+        List<User_Courses_ReturnModel> user_courses_returnModelList= new ArrayList<>();
+        for (String courseId:user.getCoursesEnrolledIds()) {
+           Optional<Course> courseOptional= repositoryCourse.findById(courseId);
+           if (!courseOptional.isPresent())
+           {
+               return new ResponseEntity<>("Inconsistend data! Fatal error. No such course",HttpStatus.BAD_REQUEST);
+           }
+          Course course= courseOptional.get();
+          Optional<TrainerModel> trainerModelOptional =repositoryTrainer.findById(course.getTrainerEmailId());
+            if (!trainerModelOptional.isPresent())
+            {
+                return new ResponseEntity<>("Inconsistend data! Fatal error. No such trainer",HttpStatus.BAD_REQUEST);
+            }
+            TrainerModel trainer = trainerModelOptional.get();
+            user_courses_returnModelList.add(new User_Courses_ReturnModel(course.getUin(),trainer.getUin(),course.getThumbnailPath(),trainer.getName(),course.getDescription(),course.getName()));
+        }
+        return new ResponseEntity<>(user_courses_returnModelList,HttpStatus.OK);
     }
 
 

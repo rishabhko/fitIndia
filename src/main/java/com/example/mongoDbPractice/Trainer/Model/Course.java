@@ -31,10 +31,10 @@ public class Course implements Comparable<Course> {
     LocalDate updationData;
 
     List<Video> videos;
-    List<User> usersEnrolled;
+//    List<User> usersEnrolled;
 
 
-    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, Boolean valid, LocalDate creationDate, LocalDate updationData, List<Video> videos, List<User> usersEnrolled) {
+    public Course(String id, String trainerEmailId, String name, String description, BigDecimal fees, String thumbnailPath, Integer uin, String category, Boolean valid, LocalDate creationDate, LocalDate updationData, List<Video> videos) {
         this.id = id;
         this.trainerEmailId = trainerEmailId;
         this.name = name;
@@ -47,7 +47,7 @@ public class Course implements Comparable<Course> {
         this.creationDate = creationDate;
         this.updationData = updationData;
         this.videos = videos;
-        this.usersEnrolled = usersEnrolled;
+//        this.usersEnrolled = usersEnrolled;
     }
 
     public Course() {
@@ -93,13 +93,13 @@ public class Course implements Comparable<Course> {
         this.uin = uin;
     }
 
-    public List<User> getUsersEnrolled() {
-        return usersEnrolled;
-    }
-
-    public void setUsersEnrolled(List<User> usersEnrolled) {
-        this.usersEnrolled = usersEnrolled;
-    }
+//    public List<User> getUsersEnrolled() {
+//        return usersEnrolled;
+//    }
+//
+//    public void setUsersEnrolled(List<User> usersEnrolled) {
+//        this.usersEnrolled = usersEnrolled;
+//    }
 
     public String getThumbnailPath() {
         return thumbnailPath;

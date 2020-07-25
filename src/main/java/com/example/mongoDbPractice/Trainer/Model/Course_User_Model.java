@@ -13,13 +13,23 @@ public class Course_User_Model {
     String id;     //same as courseId
 
     List<String> usersEnrolledIds;
+    List<Integer> usersEnrolledUins;
 
-    public Course_User_Model(String id, List<String> usersEnrolledIds) {
+    public Course_User_Model(String id, List<String> usersEnrolledIds, List<Integer> usersEnrolledUins) {
         this.id = id;
         this.usersEnrolledIds = usersEnrolledIds;
+        this.usersEnrolledUins = usersEnrolledUins;
     }
 
     public Course_User_Model() {
+    }
+
+    public List<Integer> getUsersEnrolledUins() {
+        return usersEnrolledUins;
+    }
+
+    public void setUsersEnrolledUins(List<Integer> usersEnrolledUins) {
+        this.usersEnrolledUins = usersEnrolledUins;
     }
 
     public String getId() {

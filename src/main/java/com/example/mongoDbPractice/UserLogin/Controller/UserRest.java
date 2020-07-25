@@ -39,7 +39,7 @@ public class UserRest {
     }
 
     @PostMapping("/saveUser/{otp}")
-    public ResponseEntity<ReturnLoginUser> saveUser(@Valid @RequestBody User user,@PathVariable String otp)
+    public ResponseEntity<ReturnLoginUser> saveUser( @RequestBody User user,@PathVariable String otp)
     {
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
@@ -68,7 +68,7 @@ public class UserRest {
     }
 
     @PostMapping("/saveUser/googleFb")
-    public ResponseEntity<ReturnLoginUser> saveUserGoogle(@Valid @RequestBody User user)
+    public ResponseEntity<ReturnLoginUser> saveUserGoogle( @RequestBody User user)
     {
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
@@ -107,7 +107,7 @@ public class UserRest {
     }
 
     @PostMapping("/loginUser/fbGoogle")
-    public ResponseEntity<ReturnLoginUser> loginUserFbGoogle(@Valid @RequestBody User user)
+    public ResponseEntity<ReturnLoginUser> loginUserFbGoogle( @RequestBody User user)
     {
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (!userOptional.isPresent())
@@ -130,7 +130,7 @@ public class UserRest {
     }
 
     @PostMapping("/loginUser")
-    public ResponseEntity<ReturnLoginUser> loginUser(@Valid @RequestBody User user)
+    public ResponseEntity<ReturnLoginUser> loginUser( @RequestBody User user)
     {
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (!userOptional.isPresent())

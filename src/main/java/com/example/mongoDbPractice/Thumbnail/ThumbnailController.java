@@ -24,8 +24,8 @@ import java.util.Optional;
 public class ThumbnailController {
 
 
-        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
-//            String path ="/home/arpit/fitback/";
+//        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
+            String path ="/home/arpit/fitback/";
 
     @Autowired
     private RepositoryCourse repositoryCourse;
@@ -48,20 +48,20 @@ public class ThumbnailController {
 
 
 
-        @RequestMapping(value = "/course/upload/thumbnail/{courseId}", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public ResponseEntity<String> uploadCourseThumbnail(@PathVariable String courseId,@RequestParam("thumbnail") MultipartFile thumbnail)
+        @RequestMapping(value = "/course/upload/thumbnail/{uin}", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<String> uploadCourseThumbnail(@PathVariable Integer uin,@RequestParam("thumbnail") MultipartFile thumbnail)
         {
             try {
-                Optional<Course> courseOptional = repositoryCourse.findById(courseId);
-                if (!courseOptional.isPresent())
+                Course course = repositoryCourse.findByUin(uin);
+                if (course==null)
                 {
                     return new ResponseEntity<>("No such courseId exist", HttpStatus.BAD_REQUEST);
                 }
-                Course course=courseOptional.get();
+//                Course course=courseOptional.get();
 
 
 
-                File convertFile2 = new File(path + courseId+ "/" + thumbnail.getOriginalFilename());
+                File convertFile2 = new File(path + course.getId()+ "/" + thumbnail.getOriginalFilename());
 
 
                 convertFile2.createNewFile();
@@ -70,7 +70,7 @@ public class ThumbnailController {
                 fout2.write(thumbnail.getBytes());
                 fout2.close();
                 //set course path
-                course.setThumbnailPath("http://localhost:8081/course/thumbnail/"+courseId+"/"+ thumbnail.getOriginalFilename());
+                course.setThumbnailPath("http://localhost:8081/course/thumbnail/"+course.getId()+"/"+ thumbnail.getOriginalFilename());
 
                 Optional<TrainerModel> trainerModelOptional=repositoryTrainer.findById(course.getTrainerEmailId());
                 TrainerModel trainerModel=trainerModelOptional.get();
@@ -78,7 +78,7 @@ public class ThumbnailController {
                 for (int i=0;i<trainerModel.getCourses().size();i++)
                 {
                     Course courseInList =trainerModel.getCourses().get(i);
-                    if (courseInList.getId().equals(courseId))
+                    if (courseInList.getId().equals(course.getId()))
                     {
                         trainerModel.getCourses().set(i,course);
                         repositoryTrainer.save(trainerModel);

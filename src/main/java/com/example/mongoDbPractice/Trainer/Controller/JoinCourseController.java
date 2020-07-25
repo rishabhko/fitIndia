@@ -11,6 +11,8 @@ import com.example.mongoDbPractice.UserLogin.Model.User;
 import com.example.mongoDbPractice.UserLogin.Repository.RepositoryUserMongoDb;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,84 +38,73 @@ public class JoinCourseController {
 
 
 
-    @PostMapping("/joinCourse/{courseId}")
-    public ReturnObject joinCourse(@PathVariable String courseId, @RequestBody User user1)
+    @PostMapping("/joinCourse/{courseUin}")
+    public ResponseEntity<ReturnObject> joinCourse(@PathVariable Integer courseUin, @RequestBody User user1)
     {
-        Optional<User> userOptional= repositoryUserMongoDb.findById(user1.getId());
-        if (!userOptional.isPresent())
+        if (user1.getUin()==null)
         {
-            return new ReturnObject(false,"user Id doesnt exist",null);
+            return new ResponseEntity<>(new ReturnObject(false,"User uin can't be null",null), HttpStatus.BAD_REQUEST);
         }
-        Optional<Course> courseOptional = repositoryCourse.findById(courseId);
-        if (!courseOptional.isPresent())
+
+        User user= repositoryUserMongoDb.findByUin(user1.getUin());
+        if (user==null)
         {
-            return new ReturnObject(false,"course Id doesnt exist",null);
+            return new ResponseEntity<>(new ReturnObject(false,"user Id doesnt exist",null),HttpStatus.BAD_REQUEST);
         }
-        User user = userOptional.get();
-        Course course=courseOptional.get();
+        Course course = repositoryCourse.findByUin(courseUin);
+        if (course==null)
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"course Id doesnt exist",null),HttpStatus.BAD_REQUEST);
+        }
         if (user.getCoursesEnrolledIds()==null)
         {
             user.setCoursesEnrolledIds(new ArrayList<String>());
         }
+        if (user.getCoursesEnrolledIds().contains(course.getId()))
+        {
+            return new ResponseEntity<>(new ReturnObject(false,"Already joined this course",null),HttpStatus.BAD_REQUEST);
+        }
         user.getCoursesEnrolledIds().add(course.getId());
-//        if (course.getUsersEnrolled()==null)
-//        {
-//            course.setUsersEnrolled(new ArrayList<User>());
-//        }
-//        course.getUsersEnrolled().add(user);
-
-
-
-
-//        Optional<TrainerModel> trainerOptional=repositoryTrainer.findById(course.getTrainerEmailId());
-//
-//        TrainerModel trainer = trainerOptional.get();
-//        int j=0;
-//
-//
-//        for (int i=0; i<trainer.getCourses().size();i++)
-//        {
-//            Course courseInList=trainer.getCourses().get(i);
-//            if (courseInList.getId().equals(course.getId()))
-//            {
-//                trainer.getCourses().set(i,course);
-//
-//                j=1;
-//                break;
-//            }
-//
-//        }
-//        if (j==0)
-//        {
-//            return new ReturnObject(false,"Error course ID not available in trainer",null);
-//
-//        }
-//        repositoryCourse.findById(course.getId());
-//        repositoryTrainer.findById(course.getId());
-//        repositoryCourse.save(course);
-//        repositoryTrainer.save(trainer);
-
         Optional<Course_User_Model> course_userOptional= repositoryCourse_user.findById(course.getId());
-
         if (!course_userOptional.isPresent())
         {
             Course_User_Model course_user_model=new Course_User_Model();
             course_user_model.setId(course.getId());
             course_user_model.setUsersEnrolledIds(new ArrayList<String>());
+            course_user_model.setUsersEnrolledUins(new ArrayList<Integer>());
             course_user_model.getUsersEnrolledIds().add(user.getId());
+            course_user_model.getUsersEnrolledUins().add(user.getUin());
             repositoryCourse_user.save(course_user_model);
         }
         else {
             Course_User_Model course_user_model= course_userOptional.get();
             course_user_model.getUsersEnrolledIds().add(user.getId());
+            course_user_model.getUsersEnrolledUins().add(user.getUin());
             repositoryCourse_user.save(course_user_model);
 
         }
         repositoryUserMongoDb.save(user);
+        return  new ResponseEntity<>(new ReturnObject(true,"enrolled successfully",user),HttpStatus.OK);
+    }
 
-
-
-
-        return  new ReturnObject(true,"enrolled successfully",user);
+    @GetMapping("/checkIfEnrolled/{courseUin}/{userUin}")
+    public ResponseEntity<Boolean> ifEnrolled(@PathVariable Integer courseUin,@PathVariable Integer userUin)
+    {
+       Course course= repositoryCourse.findByUin(courseUin);
+       if (course==null)
+       {
+           return new ResponseEntity<>(false,HttpStatus.OK);
+       }
+       Optional<Course_User_Model> course_user_modelOptional = repositoryCourse_user.findById(course.getId());
+       if (!course_user_modelOptional.isPresent())
+       {
+           return new ResponseEntity<>(false,HttpStatus.OK);
+       }
+       Course_User_Model course_user_model=course_user_modelOptional.get();
+       if (course_user_model.getUsersEnrolledUins().contains(userUin))
+       {
+           return new ResponseEntity<>(true,HttpStatus.OK);
+       }
+       else return new ResponseEntity<>(false,HttpStatus.OK);
     }
 }
