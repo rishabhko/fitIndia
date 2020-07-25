@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,8 +40,12 @@ public class UserRest {
     }
 
     @PostMapping("/saveUser/{otp}")
-    public ResponseEntity<ReturnLoginUser> saveUser( @RequestBody User user,@PathVariable String otp)
+    public ResponseEntity<Object> saveUser(@RequestBody User user, @PathVariable String otp, BindingResult errorList)
     {
+        if(errorList.hasErrors())
+        {
+            return handleErrors(errorList);
+        }
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
         {
@@ -68,7 +73,7 @@ public class UserRest {
     }
 
     @PostMapping("/saveUser/googleFb")
-    public ResponseEntity<ReturnLoginUser> saveUserGoogle( @RequestBody User user)
+    public ResponseEntity<ReturnLoginUser> saveUserGoogle(@RequestBody User user)
     {
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (userOptional.isPresent())
@@ -130,8 +135,12 @@ public class UserRest {
     }
 
     @PostMapping("/loginUser")
-    public ResponseEntity<ReturnLoginUser> loginUser( @RequestBody User user)
+    public ResponseEntity<Object> loginUser(@RequestBody User user,  BindingResult errorList)
     {
+        if(errorList.hasErrors())
+        {
+            return handleErrors(errorList);
+        }
         Optional<User> userOptional= repositoryUser.findById(user.getId());
         if (!userOptional.isPresent())
         {
@@ -246,6 +255,10 @@ public class UserRest {
         repositoryUser.save(userSaved);
         return new ResponseEntity<>(new ReturnLoginUser(true,"updated successfully",userSaved.getUin()),HttpStatus.OK);
 
+    }
+    private ResponseEntity<Object> handleErrors(BindingResult errorList) {
+
+        return new ResponseEntity<>(errorList.getAllErrors(),HttpStatus.BAD_REQUEST);
     }
 
 
