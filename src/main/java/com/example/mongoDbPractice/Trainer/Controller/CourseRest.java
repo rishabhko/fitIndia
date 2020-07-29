@@ -22,7 +22,9 @@ import java.util.*;
 public class CourseRest {
 
 //        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
-    String path = "/home/arpit/fitback/";
+//    String path = "/home/arpit/fitback/";
+
+    String path="/home/ubuntu/fitdrool/";
 
     @Autowired
     private RepositoryTrainer repositoryTrainer;
@@ -107,9 +109,9 @@ public class CourseRest {
 
 
         TrainerModel trainer = trainerOptional.get();
-        String idTOBeSet = generateRandomId(trainer.getName());
+        String idTOBeSet = generateRandomId(trainer.getName().replaceAll("\\s", ""));
         while (repositoryCourse.findById(idTOBeSet).isPresent()) {
-            idTOBeSet = generateRandomId(trainer.getName());
+            idTOBeSet = generateRandomId(trainer.getName().replaceAll("\\s", ""));
         }
         course.setId(idTOBeSet);
 
@@ -158,9 +160,9 @@ public class CourseRest {
         course.setUpdationData(LocalDate.now());
 
 
-        String idTOBeSet = generateRandomId(trainer.getName());
+        String idTOBeSet = generateRandomId(trainer.getName().replaceAll("\\s", ""));
         while (repositoryCourse.findById(idTOBeSet).isPresent()) {
-            idTOBeSet = generateRandomId(trainer.getName());
+            idTOBeSet = generateRandomId(trainer.getName().replaceAll("\\s", ""));
         }
         course.setId(idTOBeSet);
         course.setTrainerEmailId(trainer.getId());

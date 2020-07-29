@@ -25,7 +25,8 @@ public class ThumbnailController {
 
 
 //        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
-            String path ="/home/arpit/fitback/";
+//            String path ="/home/arpit/fitback/";
+            String path="/home/ubuntu/fitdrool/";
 
     @Autowired
     private RepositoryCourse repositoryCourse;
