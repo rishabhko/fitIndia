@@ -39,7 +39,7 @@ public class EmailController {
     public String sendEmail(@RequestBody EmailFormat emailFormat)
     {
         try {
-            String result=sendmail(emailFormat);
+//            String result=sendmail(emailFormat);
 //            Optional<EmailFormat> savedOtp = repositoryOtp.findById(emailFormat.getEmail());
 
             EmailFormat savedOtp=repositoryOtp.findByEmail(emailFormat.getEmail());
