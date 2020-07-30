@@ -83,11 +83,11 @@ public class UploadVideoController {
         fout2.close();
 
 
-        video.setThumbnailPath("http://localhost:8081/video/thumbnail/"+video.getCourseId()+"/"+video.getDate()+"/"+ thumbnail.getOriginalFilename());
+        video.setThumbnailPath("http://ec2-52-14-134-130.us-east-2.compute.amazonaws.com:8081/video/thumbnail/"+video.getCourseId()+"/"+video.getDate()+"/"+ thumbnail.getOriginalFilename());
         //setPath for thumbnail
 
         //"/stream/{fileType}/{fileName}/{trainerName}/{date}")
-        video.setVideoPath("http://localhost:8082/stream/mp4/"+video.getName()+"/"+ video.getCourseId()+"/"+video.getDate());
+        video.setVideoPath("http://ec2-52-14-134-130.us-east-2.compute.amazonaws.com:8082/stream/mp4/"+video.getName()+"/"+ video.getCourseId()+"/"+video.getDate());
 
         Course course=courseOptional.get();
         if (course.getVideos()==null)
