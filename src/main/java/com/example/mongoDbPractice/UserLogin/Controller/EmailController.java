@@ -48,7 +48,8 @@ public class EmailController {
                 repositoryOtp.delete(savedOtp);
 
             }
-            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),result));
+//            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),result));
+            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),String.valueOf(1234)));
 
 
             return "success";
