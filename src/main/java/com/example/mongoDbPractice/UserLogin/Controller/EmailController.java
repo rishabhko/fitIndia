@@ -53,9 +53,14 @@ public class EmailController {
 
 
             return "success";
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }
+//        catch (MessagingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
         return "Emails not sent successfully";
