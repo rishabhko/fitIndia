@@ -24,7 +24,7 @@ public class CourseRest {
 //        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
 //    String path = "/home/arpit/fitback/";
 
-    String path="/home/ubuntu/fitdrool/";
+    String path="/home/deploy/database/";
 
     @Autowired
     private RepositoryTrainer repositoryTrainer;

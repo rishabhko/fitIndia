@@ -26,7 +26,7 @@ public class ThumbnailController {
 
 //        String path="/home/rishabh.kohli/Documents/fitnessAPp/Backend/";
 //            String path ="/home/arpit/fitback/";
-            String path="/home/ubuntu/fitdrool/";
+        String path="/home/deploy/database/";
 
     @Autowired
     private RepositoryCourse repositoryCourse;
@@ -71,7 +71,7 @@ public class ThumbnailController {
                 fout2.write(thumbnail.getBytes());
                 fout2.close();
                 //set course path
-                course.setThumbnailPath("http://ec2-52-14-134-130.us-east-2.compute.amazonaws.com:8081/course/thumbnail/"+course.getId()+"/"+ thumbnail.getOriginalFilename());
+                course.setThumbnailPath("http://45.130.229.149:8081/course/thumbnail/"+course.getId()+"/"+ thumbnail.getOriginalFilename());
 
                 Optional<TrainerModel> trainerModelOptional=repositoryTrainer.findById(course.getTrainerEmailId());
                 TrainerModel trainerModel=trainerModelOptional.get();
@@ -141,7 +141,7 @@ public class ThumbnailController {
             FileOutputStream fout2 = new FileOutputStream(convertFile2);
             fout2.write(profilePic.getBytes());
             fout2.close();
-            trainer.setProfilePicPath("http://ec2-52-14-134-130.us-east-2.compute.amazonaws.com:8081/trainer/profilePic/" + trainer.getId() +"/" +profilePic.getOriginalFilename());
+            trainer.setProfilePicPath("http://45.130.229.149:8081/trainer/profilePic/" + trainer.getId() +"/" +profilePic.getOriginalFilename());
             repositoryTrainer.save(trainer);
             return new ResponseEntity<>("profile pic uploaded successfully",HttpStatus.OK);
         }
