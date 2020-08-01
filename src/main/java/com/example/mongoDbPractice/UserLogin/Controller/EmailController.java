@@ -39,8 +39,8 @@ public class EmailController {
     public String sendEmail(@RequestBody EmailFormat emailFormat)
     {
         try {
-            String result=sendmail(emailFormat);
-//            Optional<EmailFormat> savedOtp = repositoryOtp.findById(emailFormat.getEmail());
+//            String result=sendmail(emailFormat);
+//
 
             EmailFormat savedOtp=repositoryOtp.findByEmail(emailFormat.getEmail());
             if (savedOtp!=null)
@@ -48,21 +48,22 @@ public class EmailController {
                 repositoryOtp.delete(savedOtp);
 
             }
-            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),result));
+            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),String.valueOf(1234)));
+//            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),result));
 //            repositoryOtp.save(new EmailFormat(emailFormat.getEmail(),String.valueOf(1234)));
 
 
             return "success";
         }
-        catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        catch (Exception e)
-//        {
+//        catch (MessagingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return "Emails not sent successfully";
     }
 
