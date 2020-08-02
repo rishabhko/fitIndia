@@ -1,6 +1,7 @@
 package com.example.mongoDbPractice.Leads.Controller;
 
 import com.example.mongoDbPractice.Leads.Model.Lead;
+import com.example.mongoDbPractice.Leads.Model.ReturnLeadStatus;
 import com.example.mongoDbPractice.Leads.Repository.RepositoryLead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class LeadsController {
     private RepositoryLead repositoryLead;
 
     @PostMapping("/saveLead")
-    public ResponseEntity<String> saveLead(@RequestBody Lead lead)
+    public @ResponseBody ResponseEntity<ReturnLeadStatus> saveLead(@RequestBody Lead lead)
     {
 
         int uniqueId = generateId();
@@ -28,7 +29,7 @@ public class LeadsController {
         lead.setId(uniqueId);
         lead.setCreationDate(LocalDate.now());
         repositoryLead.save(lead);
-        return new ResponseEntity<>("saved", HttpStatus.OK);
+        return new ResponseEntity<>(new ReturnLeadStatus("saved"), HttpStatus.OK);
     }
 
     @GetMapping("/getAllLeads")
