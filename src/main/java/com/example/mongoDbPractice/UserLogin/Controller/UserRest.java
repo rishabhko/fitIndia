@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -232,9 +231,9 @@ public class UserRest {
         {
             userSaved.setPassword(userNew.getPassword());
         }
-        if (userNew.getDOB()!=null)
+        if (userNew.getDob()!=null)
         {
-            userSaved.setDOB(userNew.getDOB());
+            userSaved.setDob(userNew.getDob());
         }
         if (userNew.getFirstName()!=null)
         {

@@ -16,7 +16,7 @@ public class User {
     private String password;
     private Integer uin;
 
-    private String DOB;
+    private String dob;
     @FirstName
     private String firstName;
     @LastName
@@ -36,11 +36,11 @@ public class User {
     }
 
 
-    public User(String id, String password, int uin, String DOB, String firstName, String lastName, String gender, String phoneNumber, Boolean googleVerified, Boolean fbVerified, List<String> coursesEnrolledIds) {
+    public User(String id, String password, int uin, String dob, String firstName, String lastName, String gender, String phoneNumber, Boolean googleVerified, Boolean fbVerified, List<String> coursesEnrolledIds) {
         this.id = id;
         this.password = password;
         this.uin = uin;
-        this.DOB = DOB;
+        this.dob = dob;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -58,12 +58,12 @@ public class User {
         this.uin = uin;
     }
 
-    public String getDOB() {
-        return DOB;
+    public String getDob() {
+        return dob;
     }
 
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 
     public List<String> getCoursesEnrolledIds() {
