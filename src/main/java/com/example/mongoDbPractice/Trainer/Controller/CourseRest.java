@@ -416,6 +416,11 @@ public class CourseRest {
         }
 
         List<User_Courses_ReturnModel> user_courses_returnModelList= new ArrayList<>();
+        if (user.getCoursesEnrolledIds()==null)
+        {
+            return new ResponseEntity<>(user_courses_returnModelList,HttpStatus.OK);
+        }
+
         for (String courseId:user.getCoursesEnrolledIds()) {
            Optional<Course> courseOptional= repositoryCourse.findById(courseId);
            if (!courseOptional.isPresent())
